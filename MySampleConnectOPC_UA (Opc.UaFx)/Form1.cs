@@ -84,8 +84,25 @@ namespace ConnectKepwareOPC_UA
         {
             try
             {
-                OpcStatus result = myClient.WriteNode(tbxTag.Text, UInt16.Parse(tbxWriteValue.Text));
-                if (result.IsBad) MessageBox.Show("Status is Bad: " + result.Description);
+                OpcValue tag = myClient.ReadNode(tbxTag.Text);
+                if (tag.Status.IsGood)
+                {
+                    string tagType = tag.DataType.ToString();   //Try to get the data type of node
+
+                    OpcStatus result = new OpcStatus();
+                    if (tagType == "Boolean") result = myClient.WriteNode(tbxTag.Text, bool.Parse(tbxWriteValue.Text));
+                    else if (tagType == "String") result = myClient.WriteNode(tbxTag.Text, tbxWriteValue.Text);
+                    else if (tagType == "UInt16") result = myClient.WriteNode(tbxTag.Text, UInt16.Parse(tbxWriteValue.Text));
+                    else if (tagType == "UInt32") result = myClient.WriteNode(tbxTag.Text, UInt32.Parse(tbxWriteValue.Text));
+                    else if (tagType == "Int16") result = myClient.WriteNode(tbxTag.Text, Int16.Parse(tbxWriteValue.Text));
+                    else if (tagType == "Int32") result = myClient.WriteNode(tbxTag.Text, Int32.Parse(tbxWriteValue.Text));
+                    else if (tagType == "Float") result = myClient.WriteNode(tbxTag.Text, float.Parse(tbxWriteValue.Text));
+                    else if (tagType == "Double") result = myClient.WriteNode(tbxTag.Text, double.Parse(tbxWriteValue.Text));
+                    else if (tagType == "DateTime") result = myClient.WriteNode(tbxTag.Text, DateTime.Parse(tbxWriteValue.Text));
+                    //Add more if need
+
+                    if (result.IsBad) MessageBox.Show("Status is Bad: " + result.Description);
+                }
             }
             catch (Exception ex)
             {
